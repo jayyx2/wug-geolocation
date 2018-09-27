@@ -342,7 +342,7 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
 
 //layout
 (function ($) {
- Nm.loadScript = function() {}; //This stops unnecessary WhatsUp Gold scripts from loading
+ Nm.loadScript = function() {}; //This stops unnecessary scripts from loading
  var layoutList,	scrollToSelected;
  var prevDeviceListControlsheight = null;
  layoutList = function () {
