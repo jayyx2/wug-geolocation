@@ -1,1 +1,1 @@
-# wug-geolocation
+These 3 .ASP files allow you to place devices or groups on a map using geolocation. You provide Latitude and Longitude values on the group description using the format lat,lng and/or add a device attribute named 'LatLong' with value of lat,lng
