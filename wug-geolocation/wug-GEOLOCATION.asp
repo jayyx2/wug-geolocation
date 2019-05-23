@@ -287,10 +287,8 @@ for (var i = 0; i < nmGroups.length; i++) {
 	deviceLayerGroup.addLayer(marker);
  } //End loop
 }; //End function
-
 //When clicked, marker runs this function
 function onClickDevice(e) {window.open('/NmConsole/#v=Wug_view_dashboard_DeviceStatus/p=%7B%22deviceId%22%3A' + e.target.options.nDeviceID  + '%7D', '_blank');}
-
 function addGroupMarkers(nmGroups) {
 //Begin loop to add markers to map
 for (var i = 0; i < nmGroups.length; i++) {
@@ -309,7 +307,6 @@ for (var i = 0; i < nmGroups.length; i++) {
 	 groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupMaintenance.svg";
   } 
  else groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupDown.svg"; //Down
-
  var pos = g.sNote.split(",");
  if (pos.length != 2) continue;
  if (isNaN(pos[0]) || isNaN(pos[1])) continue;
@@ -337,7 +334,6 @@ for (var i = 0; i < nmGroups.length; i++) {
 }; //End function
 //When clicked, marker runs this function
 function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' + e.target.options.nDeviceGroupID  + '%2C%22autoLayout%22%3Atrue%7D', '_blank');}
-
 //layout
 (function ($) {
  Nm.loadScript = function() {}; //This stops unnecessary WhatsUp Gold scripts from loading
@@ -362,12 +358,10 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
   addGroupMarkers(aMarkers);
   groupsLayerGroup.addTo(map)
 	});
-	};
-	
+	};	
  //apply the layout after 600ms (allow time for .js to load)
  $(window).resize(layoutList);
  setTimeout(layoutList, 600);
-
  // Reload markers every X seconds
  setInterval(function() {
   refreshMarkers();
