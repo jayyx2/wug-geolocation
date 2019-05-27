@@ -294,15 +294,15 @@ function addGroupMarkers(nmGroups) {
 for (var i = 0; i < nmGroups.length; i++) {
  var g = nmGroups[i];
  //This section allows you to use your own icon, you will need to comment out the other var sIcon to use this one instead
- if (g.nMonitorStateID == 0) {
+ if (g.nMonitorStateID == -1) {
   //Uknown
 	groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroup.svg";
 	}
-	else if (g.nMonitorStateID > 4 && g.nMonitorStateID < 7) {
+	else if (g.nMonitorStateID == 3) {
 	 //Up
 	 groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupUp.svg";	
 	}
-	else if (g.nMonitorStateID == 4) {
+	else if (g.nMonitorStateID == 2) {
 	 //Maintenance
 	 groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupMaintenance.svg";
   } 

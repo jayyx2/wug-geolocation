@@ -6,7 +6,7 @@
 var oDb = GetDb();
 var groups = [];
 //Query database for devices with lat/long information that also match the dynamic group filter
-var sSql = "Select * From DeviceGroup Where sNote is not NULL and sNote not like ''";
+var sSql = "Select nDeviceGroupID, sNote, nMonitorStateID = (select nInternalMonitorState from MonitorState MS where MS.nMonitorStateID = DeviceGroup.nMonitorStateID), sGroupName, sStatus From DeviceGroup Where sNote is not NULL and sNote not like ''";
 var oResult = oDb.ExecSql(sSql);
 if (oResult.Failed) {
 	// Failed to load the group data
