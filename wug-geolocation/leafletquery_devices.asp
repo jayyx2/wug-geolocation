@@ -23,8 +23,8 @@ while (!oDb.IsEOF){
 }
 
 //Query database for devices with lat/long information that also match the dynamic group filter
-var sSql = "select D.nDeviceID, D.nDeviceTypeID, D.sDisplayName, sValue, nWorstStateID, nBestStateID, sStatus from DeviceAttribute DA " +
-"join Device D on D.nDeviceID = DA.nDeviceID where (sName = 'LatLong' and sValue is not null and D.nDeviceID in (" + sGroupFilter + "))";
+var sSql = "select D.nDeviceID, D.nDeviceTypeID, D.sDisplayName, sValue, nWorstStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nWorstStateID), nBestStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nBestStateID), " +
+"sStatus from DeviceAttribute DA join Device D on D.nDeviceID = DA.nDeviceID where (sName = 'LatLong' and sValue is not null and D.nDeviceID in (" + sGroupFilter + "))";
 var oResult = oDb.ExecSql(sSql);
 if (oResult.Failed) {
 	// Failed to load the group data

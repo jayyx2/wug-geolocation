@@ -228,22 +228,22 @@ for (var i = 0; i < nmGroups.length; i++) {
  var g = nmGroups[i];
  //This section allows you to use your own icon, you will need to comment out the other var sIcon to use this one instead
  //Manual icon
- if (g.nWorstStateID == 0) {
+ if (g.nBestStateID == -1) {
   var sIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceUnknown.svg";
  }
- else if (g.nWorstStateID != g.nBestStateID) {
+ else if (g.nWorstStateID == 1 && g.nBestStateID == 3) {
   //Up with down monitors
   var sIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceUpMonitorDown_Green.svg";
  }
- else if (g.nWorstStateID == 5 || g.nWorstStateID == 6) {
+ else if (g.nWorstStateID == 3 && g.nWorstStateID == 3) {
   //Up device
   var sIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceUp.svg";
  }
- else if (g.nWorstStateID == 4) {
+ else if (g.nWorstStateID == 2 || g.nBestStateID == 2) {
   //Maintenance
   var sIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceMaintenance.svg";
  }
- else if (g.nWorstStateID != 5 || g.nWorstStateID != 6 || g.nWorstStateID != 3 || g.nWorstStateID != 2 || g.nWorstStateID != 0) {
+ else if (g.nWorstStateID == 1 && g.nBestStateID == 1) {
   //Down Device
   var sIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceDown.svg";
  }
