@@ -22,11 +22,11 @@ if (JSON) {
 }
 JSON = Js.JSON;
 %>
-<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.3.4/dist/leaflet.css" rel="stylesheet" type="text/css" />
-<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.3.4/dist/leaflet.js">
+<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
 //All credit to Leaflet contributors.
 //You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
-<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.4.0/leaflet-providers.js">
+<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
 //All credit to Leaflet-Extras contributors.
 //You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
 <%
