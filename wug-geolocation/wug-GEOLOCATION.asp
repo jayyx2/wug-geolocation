@@ -25,10 +25,14 @@ JSON = Js.JSON;
 <link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
 //All credit to Leaflet contributors.
-//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
+//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html
+//05-29-2019 Verified working with Leaflet 1.5.1
+</script>
 <script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
 //All credit to Leaflet-Extras contributors.
-//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
+//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members
+//05-29-2019 Verified working with Leaflet Providers 1.7.0
+</script>
 <%
 Js.initialize();
 %>
@@ -41,13 +45,17 @@ Js.initialize();
 ///******************************
 ///VARIABLES THAT CAN BE CHANGED*
 ///******************************
-var defaultLat = parseFloat(37.077979); //Default latitude
-var defaultLong = parseFloat(-96.991419); //Default longitude
-var defaultZoom = 5; //Default zoom, higher number is closer
+///API KEYS
 var HEREappId = ""; //This is your appId, to acquire one sign-up for free here: https://developer.here.com/
 var HEREappCode = ""; //This is your appCode, to acquire one sign-up for free here: https://developer.here.com/ 
 var ThunderforestAPIKey = "" // In order to use Thunderforest maps, you must register. https://thunderforest.com/pricing/ (Tiles per month 150,000 free)
 var ArcGIS = false //Set to true once registered. In order to use ArcGIS maps, you must register at https://developers.arcgis.com/en/sign-up/ and abide by the terms of service. No special syntax is required.
+var OpenWeatherMapAPIKey = "" //Sing-up here https://openweathermap.org/ to get an API key
+var MapBoxAccessToken = "" //Sign-up here https://account.mapbox.com/
+///MAP DEFAULTS
+var defaultLat = parseFloat(37.077979); //Default latitude
+var defaultLong = parseFloat(-96.991419); //Default longitude
+var defaultZoom = 5; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
 var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
 var nRefreshInterval = 60 //Seconds to wait between refreshing markers
@@ -79,7 +87,9 @@ if (sessionStorage.getItem('lat') == null || sessionStorage.getItem('lng') == nu
 //Create the map canvas
 map = L.map('map').setView([lat, lng], zoomLevel);
 var baselayers = {};
-//HERE (formerly Nokia). In order to use HERE layers, you must register. Once registered, you can create an app_id and app_code
+//05-29-2019 Layers found not to be working from United States disabled. You can try them yourself if you'd like by removing the // from before them.
+//05-29-2019 Added additional layers found to be working. 
+//HERE (formerly Nokia). In order to use HERE layers, you must register. Once registered, you need to define app_id and app_code variables near top of the code
 if(HEREappCode.length > 0 && HEREappId.length > 0){
 baselayers['HERE.normalDay'] = L.tileLayer.provider('HERE.normalDay', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.normalDayCustom'] = L.tileLayer.provider('HERE.normalDayCustom', {app_id: HEREappId, app_code: HEREappCode});
@@ -99,42 +109,107 @@ baselayers['HERE.hybridDayGrey'] = L.tileLayer.provider('HERE.hybridDayGrey', {a
 baselayers['HERE.terrainDay'] = L.tileLayer.provider('HERE.terrainDay', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.redcuedDay'] = L.tileLayer.provider('HERE.redcuedDay', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.redcuedNight'] = L.tileLayer.provider('HERE.redcuedNight', {app_id: HEREappId, app_code: HEREappCode});
+baselayers['HERE.mapLabels'] = L.tileLayer.provider('HERE.mapLabels', {app_id: HEREappId, app_code: HEREappCode});
+baselayers['HERE.trafficFlow'] = L.tileLayer.provider('HERE.trafficFlow', {app_id: HEREappId, app_code: HEREappCode});
+baselayers['HERE.carnavDayGrey'] = L.tileLayer.provider('HERE.carnavDayGrey', {app_id: HEREappId, app_code: HEREappCode});
+baselayers['HERE.terrainDay'] = L.tileLayer.provider('HERE.terrainDay', {app_id: HEREappId, app_code: HEREappCode});
 }
 //OpenStreetMap
 baselayers['OpenStreetMap.Mapnik'] = L.tileLayer.provider('OpenStreetMap.Mapnik');
-baselayers['OpenStreetMap.BlackAndWhite'] = L.tileLayer.provider('OpenStreetMap.BlackAndWhite');
 baselayers['OpenStreetMap.HOT'] = L.tileLayer.provider('OpenStreetMap.HOT');
-baselayers['OpenTopoMap'] = L.tileLayer.provider('OpenTopoMap');
+//baselayers['OpenTopoMap'] = L.tileLayer.provider('OpenTopoMap'); //This doesn't seem to work?
+//baselayers['OpenSeaMap'] = L.tileLayer.provider('OpenSeaMap'); //This doesn't seem to work?
+//baselayers['OpenPtMap'] = L.tileLayer.provider('OpenPtMap'); //This doesn't seem to work?
+baselayers['OpenRailwayMap'] = L.tileLayer.provider('OpenRailwayMap');
+//baselayers['OpenFireMap'] = L.tileLayer.provider('OpenFireMap'); //This doesn't seem to work?
+//baselayers['SafeCast'] = L.tileLayer.provider('SafeCast'); //Useless map?
+//OpenMapSurfer
 baselayers['OpenMapSurfer.Roads'] = L.tileLayer.provider('OpenMapSurfer.Roads');
-baselayers['OpenMapSurfer.Grayscale'] = L.tileLayer.provider('OpenMapSurfer.Grayscale');
+baselayers['OpenMapSurfer.Hybrid'] = L.tileLayer.provider('OpenMapSurfer.Hybrid');
+baselayers['OpenMapSurfer.AdminBounds'] = L.tileLayer.provider('OpenMapSurfer.AdminBounds');
+//baselayers['OpenMapSurfer.ContourLines'] = L.tileLayer.provider('OpenMapSurfer.ContourLines'); //This doesn't seem to work?
+//baselayers['OpenMapSurfer.Hillshade'] = L.tileLayer.provider('OpenMapSurfer.Hillshade'); //Useless map
+//baselayers['OpenMapSurfer.ElementsAtRisk'] = L.tileLayer.provider('OpenMapSurfer.ElementsAtRisk'); //Useless map
 //Hydda
 baselayers['Hydda.Full'] = L.tileLayer.provider('Hydda.Full');
 baselayers['Hydda.Base'] = L.tileLayer.provider('Hydda.Base');
+baselayers['Hydda.RoadsAndLabels'] = L.tileLayer.provider('Hydda.RoadsAndLabels');
 //Stamen
 baselayers['Stamen.Toner'] = L.tileLayer.provider('Stamen.Toner');
 baselayers['Stamen.TonerBackground'] = L.tileLayer.provider('Stamen.TonerBackground');
 baselayers['Stamen.TonerLite'] = L.tileLayer.provider('Stamen.TonerLite');
+baselayers['Stamen.TonerLabels'] = L.tileLayer.provider('Stamen.TonerLabels');
 baselayers['Stamen.Watercolor'] = L.tileLayer.provider('Stamen.Watercolor');
 baselayers['Stamen.Terrain'] = L.tileLayer.provider('Stamen.Terrain');
 baselayers['Stamen.TerrainBackground'] = L.tileLayer.provider('Stamen.TerrainBackground');
 baselayers['Stamen.TopOSMRelief'] = L.tileLayer.provider('Stamen.TopOSMRelief');
+baselayers['Stamen.TopOSMFeatures'] = L.tileLayer.provider('Stamen.TopOSMFeatures');
 //MtbMap
-baselayers['MtbMap'] = L.tileLayer.provider('MtbMap');
+//baselayers['MtbMap'] = L.tileLayer.provider('MtbMap'); //This doesn't seem to work?
 //CartoDB
 baselayers['CartoDB.Positron'] = L.tileLayer.provider('CartoDB.Positron');
 baselayers['CartoDB.PositronNoLabels'] = L.tileLayer.provider('CartoDB.PositronNoLabels');
+//baselayers['CartoDB.PositronOnlyLabels'] = L.tileLayer.provider('CartoDB.PositronOnlyLabels'); //Useless map
 baselayers['CartoDB.DarkMatter'] = L.tileLayer.provider('CartoDB.DarkMatter');
 baselayers['CartoDB.DarkMatterNoLabels'] = L.tileLayer.provider('CartoDB.DarkMatterNoLabels');
+//baselayers['CartoDB.DarkMatterOnlyLabels'] = L.tileLayer.provider('CartoDB.DarkMatterOnlyLabels'); //Useless map
 baselayers['CartoDB.Voyager'] = L.tileLayer.provider('CartoDB.Voyager');
 baselayers['CartoDB.VoyagerNoLabels'] = L.tileLayer.provider('CartoDB.VoyagerNoLabels');
+//baselayers['CartoDB.VoyagerOnlyLabels'] = L.tileLayer.provider('CartoDB.VoyagerOnlyLabels'); //Useless Map
 baselayers['CartoDB.VoyagerLabelsUnder'] = L.tileLayer.provider('CartoDB.VoyagerLabelsUnder');
+//HikeBike
 baselayers['HikeBike.HikeBike'] = L.tileLayer.provider('HikeBike.HikeBike');
-baselayers['NASAGIBS.ViirsEarthAtNight2012'] = L.tileLayer.provider('NASAGIBS.ViirsEarthAtNight2012');
-baselayers['Wikimedia'] = L.tileLayer.provider('Wikimedia');
+//baselayers['HikeBike.HillShading'] = L.tileLayer.provider('HikeBike.HillShading'); //Useless map?
+//BasemapAT //These don't seem to work
+//baselayers['BasemapAT.basemap'] = L.tileLayer.provider('BasemapAT.basemap');
+//baselayers['BasemapAT.grau'] = L.tileLayer.provider('BasemapAT.grau');
+//baselayers['BasemapAT.overlay'] = L.tileLayer.provider('BasemapAT.overlay');
+//baselayers['BasemapAT.highdpi'] = L.tileLayer.provider('BasemapAT.highdpi');
+//baselayers['BasemapAT.orthofoto'] = L.tileLayer.provider('BasemapAT.orthofoto');
+//OpenWeatherMap -- NEED API KEY
+if(OpenWeatherMapAPIKey.length > 0){
+baselayers['OpenWeatherMap.Clouds'] = L.tileLayer.provider('OpenWeatherMap.Clouds', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.CloudsClassic'] = L.tileLayer.provider('OpenWeatherMap.CloudsClassic', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Precipitation'] = L.tileLayer.provider('OpenWeatherMap.Precipitation', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.PrecipitationClassic'] = L.tileLayer.provider('OpenWeatherMap.PrecipitationClassic', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Rain'] = L.tileLayer.provider('OpenWeatherMap.Rain', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.RainClassic'] = L.tileLayer.provider('OpenWeatherMap.RainClassic', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Pressure'] = L.tileLayer.provider('OpenWeatherMap.Pressure', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.PressureContour'] = L.tileLayer.provider('OpenWeatherMap.PressureContour', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Wind'] = L.tileLayer.provider('OpenWeatherMap.Wind', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Temperature'] = L.tileLayer.provider('OpenWeatherMap.Temperature', {apiKey: OpenWeatherMapAPIKey});
+baselayers['OpenWeatherMap.Snow'] = L.tileLayer.provider('OpenWeatherMap.Snow', {apiKey: OpenWeatherMapAPIKey});
+};
+//GeoportailFrance
+//baselayers['GeoportailFrance.parcels'] = L.tileLayer.provider('GeoportailFrance.parcels'); //Useless map?
 baselayers['GeoportailFrance.ignMaps'] = L.tileLayer.provider('GeoportailFrance.ignMaps');
 baselayers['GeoportailFrance.maps'] = L.tileLayer.provider('GeoportailFrance.maps');
 baselayers['GeoportailFrance.orthos'] = L.tileLayer.provider('GeoportailFrance.orthos');
-//Esri/ArcGIS Esri.WorldGrayCanvas
+//OneMapSG -- These don't seem to work?
+//baselayers['OneMapSG.Default'] = L.tileLayer.provider('OneMapSG.Default');
+//baselayers['OneMapSG.Night'] = L.tileLayer.provider('OneMapSG.Night');
+//baselayers['OneMapSG.Original'] = L.tileLayer.provider('OneMapSG.Original');
+//baselayers['OneMapSG.Grey'] = L.tileLayer.provider('OneMapSG.Grey');
+//baselayers['OneMapSG.LandLot'] = L.tileLayer.provider('OneMapSG.LandLot');
+//NASAGIBS -- These don't seem to work?
+//baselayers['NASAGIBS.ModisTerraTrueColorCR'] = L.tileLayer.provider('NASAGIBS.ModisTerraTrueColorCR');
+//baselayers['NASAGIBS.ModisTerraBands367CR'] = L.tileLayer.provider('NASAGIBS.ModisTerraBands367CR');
+//baselayers['NASAGIBS.ViirsEarthAtNight2012'] = L.tileLayer.provider('NASAGIBS.ViirsEarthAtNight2012');
+//baselayers['NASAGIBS.ModisTerraLSTDay'] = L.tileLayer.provider('NASAGIBS.ModisTerraLSTDay');
+//baselayers['NASAGIBS.ModisTerraSnowCover'] = L.tileLayer.provider('NASAGIBS.ModisTerraSnowCover');
+//baselayers['NASAGIBS.ModisTerraAOD'] = L.tileLayer.provider('NASAGIBS.ModisTerraAOD');
+//baselayers['NASAGIBS.ModisTerraChlorophyl'] = L.tileLayer.provider('NASAGIBS.ModisTerraChlorophyl');
+//Others
+//baselayers['NLS'] = L.tileLayer.provider('NLS'); -- This doesn't seem to work?
+//baselayers['FreeMapSK'] = L.tileLayer.provider('FreeMapSK'); -- This doesn't seem to work?
+//Mapbox -- In order to use Mapbox layers, you must register. Once registered, you need to define the MapBoxAccessToken variable near top of the code
+//Sign-up here https://account.mapbox.com/
+if(MapBoxAccessToken.length > 0){
+baselayers['MapBox'] = L.tileLayer.provider('MapBox', {accessToken: MapBoxAccessToken});
+};
+//baselayers['nlmaps'] = L.tileLayer.provider('nlmaps'); -- This doesn't seem to work?
+baselayers['Wikimedia'] = L.tileLayer.provider('Wikimedia');
+//Esri/ArcGIS
 if(ArcGIS){
 baselayers['Esri.WorldStreetMap'] = L.tileLayer.provider('Esri.WorldStreetMap');
 baselayers['Esri.DeLorme'] = L.tileLayer.provider('Esri.DeLorme');
@@ -146,7 +221,7 @@ baselayers['Esri.WorldPhysical'] = L.tileLayer.provider('Esri.WorldPhysical');
 baselayers['Esri.OceanBasemap'] = L.tileLayer.provider('Esri.OceanBasemap');
 baselayers['Esri.NatGeoWorldMap'] = L.tileLayer.provider('Esri.NatGeoWorldMap');
 baselayers['Esri.WorldGrayCanvas'] = L.tileLayer.provider('Esri.WorldGrayCanvas');
-}
+};
 //Thunderforest
 if(ThunderforestAPIKey.length > 0){
 baselayers['Thunderforest.OpenCycleMap'] = L.tileLayer.provider('Thunderforest.OpenCycleMap', {apikey: ThunderforestAPIKey});
@@ -261,8 +336,8 @@ for (var i = 0; i < nmGroups.length; i++) {
  var sTooltip = sDisplayName
  //This formats the status, removing |, numbers before monitor name, and changing ; to ,
  var sStatus = g.sStatus;
- var sStatusReplace = sStatus.split('|').join(',');
- sStatusReplace = sStatusReplace.replace(/([0-9].,)/g, '');
+ var sStatusReplace = sStatus.replace(/([0-9])/g, '');
+ sStatusReplace = sStatusReplace.replace(/(\|)/g, '');
  sStatusReplace = sStatusReplace.split(';').join(', ');
  var sStatusReplaceLength = sStatusReplace.length;
  sStatusReplace = sStatusReplace.substring(0, sStatusReplaceLength-2);
