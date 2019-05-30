@@ -1,4 +1,4 @@
-These 3 .ASP files allow you to place devices or groups on a map using geolocation. You provide Latitude and Longitude values on the group description using the format lat,lng and/or add a device attribute named 'LatLong' with value of lat,lng. I use https://getlatlong.net/ to lookup mine, but you could use whatever you'd like that provides the information.
+These 3 .ASP files allow you to place devices or groups on a map using geolocation. Drop them in %InstallDir%\Ipswitch\WhatsUp\HTML\NmConsole. You provide Latitude and Longitude values on the group description using the format lat,lng and/or add a device attribute named 'LatLong' with value of lat,lng. I use https://getlatlong.net/ to lookup mine, but you could use whatever you'd like that provides the information.
 
 Example Device Attribute:
 LatLong 28.719536,-81.507397
