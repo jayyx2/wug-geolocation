@@ -25,14 +25,10 @@ JSON = Js.JSON;
 <link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
 //All credit to Leaflet contributors.
-//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html
-//05-29-2019 Verified working with Leaflet 1.5.1
-</script>
+//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
 <script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
 //All credit to Leaflet-Extras contributors.
-//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members
-//05-29-2019 Verified working with Leaflet Providers 1.7.0
-</script>
+//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
 <%
 Js.initialize();
 %>
@@ -58,7 +54,7 @@ var defaultLong = parseFloat(-96.991419); //Default longitude
 var defaultZoom = 5; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
 var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
-var nRefreshInterval = 60 //Seconds to wait between refreshing markers
+var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
 ///**********************************
 ///END VARIABLES THAT CAN BE CHANGED*
 ///**********************************
@@ -166,20 +162,6 @@ baselayers['HikeBike.HikeBike'] = L.tileLayer.provider('HikeBike.HikeBike');
 //baselayers['BasemapAT.overlay'] = L.tileLayer.provider('BasemapAT.overlay');
 //baselayers['BasemapAT.highdpi'] = L.tileLayer.provider('BasemapAT.highdpi');
 //baselayers['BasemapAT.orthofoto'] = L.tileLayer.provider('BasemapAT.orthofoto');
-//OpenWeatherMap -- NEED API KEY
-if(OpenWeatherMapAPIKey.length > 0){
-baselayers['OpenWeatherMap.Clouds'] = L.tileLayer.provider('OpenWeatherMap.Clouds', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.CloudsClassic'] = L.tileLayer.provider('OpenWeatherMap.CloudsClassic', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Precipitation'] = L.tileLayer.provider('OpenWeatherMap.Precipitation', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.PrecipitationClassic'] = L.tileLayer.provider('OpenWeatherMap.PrecipitationClassic', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Rain'] = L.tileLayer.provider('OpenWeatherMap.Rain', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.RainClassic'] = L.tileLayer.provider('OpenWeatherMap.RainClassic', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Pressure'] = L.tileLayer.provider('OpenWeatherMap.Pressure', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.PressureContour'] = L.tileLayer.provider('OpenWeatherMap.PressureContour', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Wind'] = L.tileLayer.provider('OpenWeatherMap.Wind', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Temperature'] = L.tileLayer.provider('OpenWeatherMap.Temperature', {apiKey: OpenWeatherMapAPIKey});
-baselayers['OpenWeatherMap.Snow'] = L.tileLayer.provider('OpenWeatherMap.Snow', {apiKey: OpenWeatherMapAPIKey});
-};
 //GeoportailFrance
 //baselayers['GeoportailFrance.parcels'] = L.tileLayer.provider('GeoportailFrance.parcels'); //Useless map?
 baselayers['GeoportailFrance.ignMaps'] = L.tileLayer.provider('GeoportailFrance.ignMaps');
@@ -232,12 +214,28 @@ baselayers['Thunderforest.Landscape'] = L.tileLayer.provider('Thunderforest.Land
 baselayers['Thunderforest.Outdoors'] = L.tileLayer.provider('Thunderforest.Outdoors', {apikey: ThunderforestAPIKey});
 baselayers['Thunderforest.Pioneer'] = L.tileLayer.provider('Thunderforest.Pioneer', {apikey: ThunderforestAPIKey});
 };
+
+//WUG Devices/Groups
 var overlays = {
-    "Devices": deviceLayerGroup,
-    "Groups" : groupsLayerGroup
+	"WhatsUp Gold - Devices": deviceLayerGroup,
+	"WhatsUp Gold - Groups" : groupsLayerGroup
 };
-//Add map/layer control
-var control = L.control.layers(baselayers, overlays, {collapsed: true, sortLayers: true}).addTo(map)
+
+if(OpenWeatherMapAPIKey.length > 0){
+//Add weather overlays 05-30-2019 changed these to overlays instead of baselayers.
+overlays['OpenWeatherMap.Clouds'] = L.tileLayer.provider('OpenWeatherMap.Clouds', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.CloudsClassic'] = L.tileLayer.provider('OpenWeatherMap.CloudsClassic', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Precipitation'] = L.tileLayer.provider('OpenWeatherMap.Precipitation', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.PrecipitationClassic'] = L.tileLayer.provider('OpenWeatherMap.PrecipitationClassic', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Rain'] = L.tileLayer.provider('OpenWeatherMap.Rain', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.RainClassic'] = L.tileLayer.provider('OpenWeatherMap.RainClassic', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Pressure'] = L.tileLayer.provider('OpenWeatherMap.Pressure', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Wind'] = L.tileLayer.provider('OpenWeatherMap.Wind', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Temperature'] = L.tileLayer.provider('OpenWeatherMap.Temperature', {apiKey: OpenWeatherMapAPIKey});
+overlays['OpenWeatherMap.Snow'] = L.tileLayer.provider('OpenWeatherMap.Snow', {apiKey: OpenWeatherMapAPIKey});
+};
+
+var control = L.control.layers(baselayers, overlays, {collapsed: true, sortLayers: false}).addTo(map);
 L.control.scale().addTo(map);
 
 //Add the map layer
