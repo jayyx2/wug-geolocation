@@ -1,5 +1,12 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
+//All credit to Leaflet contributors.
+//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
+<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
+//All credit to Leaflet-Extras contributors.
+//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
 </head>
 <%@ language="jscript" %>
 <!--#include virtual="/NmConsole/Core/Ajax/Ajax.inc"-->
@@ -22,20 +29,10 @@ if (JSON) {
 }
 JSON = Js.JSON;
 %>
-<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
-<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
-//All credit to Leaflet contributors.
-//You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
-<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
-//All credit to Leaflet-Extras contributors.
-//You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
+
 <%
 Js.initialize();
 %>
-<!-- This section allows you to change the styling of the tooltips used -->
-<style>
-.leaflet-tooltip {color: Goldenrod;background-color: black;font-family: "Lucida Grande", "Arial", sans-serif;font-size: 12px;font-weight: bold;text-align: center;white-space: nowrap;}
-</style>
 <div id='map'>
 <script type="text/javascript">
 ///******************************
@@ -55,6 +52,10 @@ var defaultZoom = 5; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
 var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
 var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
+//Make a comma separate list using any of these options, example ["OpenWeatherMap.CloudsClassic", "OpenWeatherMap.PrecipitationClassic", "OpenWeatherMap.RainClassic"]
+//OpenWeatherMap.Clouds, OpenWeatherMap.CloudsClassic, OpenWeatherMap.Precipitation, OpenWeatherMap.PrecipitationClassic
+//OpenWeatherMap.Rain, OpenWeatherMap.RainClassic, OpenWeatherMap.Pressure, OpenWeatherMap.Wind, OpenWeatherMap.Temperature, OpenWeatherMap.Snow
+var aDefaultOverlay = ["OpenWeatherMap.Rain"] //Which overlays will be default?
 ///**********************************
 ///END VARIABLES THAT CAN BE CHANGED*
 ///**********************************
@@ -103,8 +104,8 @@ baselayers['HERE.hybridDay'] = L.tileLayer.provider('HERE.hybridDay', {app_id: H
 baselayers['HERE.hybridDayTransit'] = L.tileLayer.provider('HERE.hybridDayTransit', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.hybridDayGrey'] = L.tileLayer.provider('HERE.hybridDayGrey', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.terrainDay'] = L.tileLayer.provider('HERE.terrainDay', {app_id: HEREappId, app_code: HEREappCode});
-baselayers['HERE.redcuedDay'] = L.tileLayer.provider('HERE.redcuedDay', {app_id: HEREappId, app_code: HEREappCode});
-baselayers['HERE.redcuedNight'] = L.tileLayer.provider('HERE.redcuedNight', {app_id: HEREappId, app_code: HEREappCode});
+//baselayers['HERE.redcuedDay'] = L.tileLayer.provider('HERE.redcuedDay', {app_id: HEREappId, app_code: HEREappCode}); //This layer no longer works?
+//baselayers['HERE.redcuedNight'] = L.tileLayer.provider('HERE.redcuedNight', {app_id: HEREappId, app_code: HEREappCode}); //This layer no longer works?
 baselayers['HERE.mapLabels'] = L.tileLayer.provider('HERE.mapLabels', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.trafficFlow'] = L.tileLayer.provider('HERE.trafficFlow', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.carnavDayGrey'] = L.tileLayer.provider('HERE.carnavDayGrey', {app_id: HEREappId, app_code: HEREappCode});
@@ -240,6 +241,10 @@ L.control.scale().addTo(map);
 
 //Add the map layer
 baselayers[defaultMapLayer].addTo(map);
+aDefaultOverlay.forEach(function(defaultOverlay){
+overlays[defaultOverlay].addTo(map);
+})
+
 //grab map center and zoom level each tme a zoom is ended
  map.on("zoomend", function(){
   var zoomLev = map.getZoom();
