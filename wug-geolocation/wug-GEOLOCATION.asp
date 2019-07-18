@@ -33,9 +33,9 @@ JSON = Js.JSON;
 <%
 Js.initialize();
 %>
-<%
+<script>
 //Set the tooltip styling here
-%>
+</script>
 <style>
 .leaflet-tooltip{padding: 0px; background-color: black; box-shadow: none; color: goldenrod; border:none;}
 .leaflet-tooltip-bottom::before{display:none;}
@@ -61,7 +61,7 @@ var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the 
 //Make a comma separate list using any of these options, example ["OpenWeatherMap.CloudsClassic", "OpenWeatherMap.PrecipitationClassic", "OpenWeatherMap.RainClassic"]
 //OpenWeatherMap.Clouds, OpenWeatherMap.CloudsClassic, OpenWeatherMap.Precipitation, OpenWeatherMap.PrecipitationClassic
 //OpenWeatherMap.Rain, OpenWeatherMap.RainClassic, OpenWeatherMap.Pressure, OpenWeatherMap.Wind, OpenWeatherMap.Temperature, OpenWeatherMap.Snow
-var aDefaultOverlay = ["OpenWeatherMap.Rain", "WhatsUp Gold - Groups"] //Which overlays will be default?
+var aDefaultOverlay = ["OpenWeatherMap.Rain", "WhatsUp Gold - Groups", "WhatsUp Gold - Devices"] //Which overlays will be default?
 //Tooltip settings
 var bAlwaysShow = true; //Always show the icon tooltip? valid settings are true or false
 var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
