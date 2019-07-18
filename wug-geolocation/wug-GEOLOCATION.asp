@@ -371,7 +371,7 @@ for (var i = 0; i < nmGroups.length; i++) {
  //Add the marker to the map
  var marker = new L.marker([pos[0], pos[1]],{icon:myIcon, nDeviceID:nDeviceID, title:sStatusReplace})
   .on('click', onClickDevice)
-	.bindTooltip(sTooltip, {permanent: 'true', direction: 'auto'});
+	.bindTooltip(sTooltip, {permanent: bAlwaysShow, direction: 'auto'});
 	console.log("Adding marker " + sTooltip +" to deviceLayerGroup");
 	deviceLayerGroup.addLayer(marker);
  } //End loop
