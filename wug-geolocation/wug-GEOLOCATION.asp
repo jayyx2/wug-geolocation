@@ -58,13 +58,13 @@ var defaultLong = parseFloat(-82.23541259765626); //Default longitude
 var defaultZoom = 8; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
 var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
-var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
 //Make a comma separate list using any of these options, example ["OpenWeatherMap.CloudsClassic", "OpenWeatherMap.PrecipitationClassic", "OpenWeatherMap.RainClassic"]
 //OpenWeatherMap.Clouds, OpenWeatherMap.CloudsClassic, OpenWeatherMap.Precipitation, OpenWeatherMap.PrecipitationClassic
 //OpenWeatherMap.Rain, OpenWeatherMap.RainClassic, OpenWeatherMap.Pressure, OpenWeatherMap.Wind, OpenWeatherMap.Temperature, OpenWeatherMap.Snow
 var aDefaultOverlay = ["OpenWeatherMap.Rain", "WhatsUp Gold - Groups"] //Which overlays will be default?
 //Tooltip settings
 var bAlwaysShow = true; //Always show the icon tooltip? valid settings are true or false
+var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
 ///**********************************
 ///END VARIABLES THAT CAN BE CHANGED*
 ///**********************************
@@ -295,14 +295,16 @@ var devicesRemoved = 0
 console.log("Device layer group active:" + IsLayerActive(deviceLayerGroup));
 if(IsLayerActive(deviceLayerGroup) == true) {
  console.log("Removing deviceLayerGroup markers for refresh");
- map.removeLayer(deviceLayerGroup)
+ //map.removeLayer(deviceLayerGroup)
+ deviceLayerGroup.clearLayers();
  devicesRemoved = 1};
 //Groups
 console.log("Groups layer group active:" + IsLayerActive(groupsLayerGroup));
 var groupsRemoved = 0
 if(IsLayerActive(groupsLayerGroup) == true) {
  console.log("Removing groupsLayerGroup markers for refresh");
- map.removeLayer(groupsLayerGroup)
+ //map.removeLayer(groupsLayerGroup)
+ groupsLayerGroup.clearLayers();
  groupsRemoved = 1};
 //return if the devices/groups were removed or not
 return {devicesRemoved, groupsRemoved};
