@@ -33,6 +33,13 @@ JSON = Js.JSON;
 <%
 Js.initialize();
 %>
+<%
+//Set the tooltip styling here
+%>
+<style>
+.leaflet-tooltip{padding: 0px; background-color: black; box-shadow: none; color: goldenrod; border:none;}
+.leaflet-tooltip-bottom::before{display:none;}
+</style>
 <div id='map'>
 <script type="text/javascript">
 ///******************************
@@ -46,16 +53,18 @@ var ArcGIS = false //Set to true once registered. In order to use ArcGIS maps, y
 var OpenWeatherMapAPIKey = "" //Sing-up here https://openweathermap.org/ to get an API key
 var MapBoxAccessToken = "" //Sign-up here https://account.mapbox.com/
 ///MAP DEFAULTS
-var defaultLat = parseFloat(37.077979); //Default latitude
-var defaultLong = parseFloat(-96.991419); //Default longitude
-var defaultZoom = 5; //Default zoom, higher number is closer
+var defaultLat = parseFloat(27.620273282414246); //Default latitude
+var defaultLong = parseFloat(-82.23541259765626); //Default longitude
+var defaultZoom = 8; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
 var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
 var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
 //Make a comma separate list using any of these options, example ["OpenWeatherMap.CloudsClassic", "OpenWeatherMap.PrecipitationClassic", "OpenWeatherMap.RainClassic"]
 //OpenWeatherMap.Clouds, OpenWeatherMap.CloudsClassic, OpenWeatherMap.Precipitation, OpenWeatherMap.PrecipitationClassic
 //OpenWeatherMap.Rain, OpenWeatherMap.RainClassic, OpenWeatherMap.Pressure, OpenWeatherMap.Wind, OpenWeatherMap.Temperature, OpenWeatherMap.Snow
-var aDefaultOverlay = ["OpenWeatherMap.Rain"] //Which overlays will be default?
+var aDefaultOverlay = ["OpenWeatherMap.Rain", "WhatsUp Gold - Groups"] //Which overlays will be default?
+//Tooltip settings
+var bAlwaysShow = true; //Always show the icon tooltip? valid settings are true or false
 ///**********************************
 ///END VARIABLES THAT CAN BE CHANGED*
 ///**********************************
@@ -104,8 +113,8 @@ baselayers['HERE.hybridDay'] = L.tileLayer.provider('HERE.hybridDay', {app_id: H
 baselayers['HERE.hybridDayTransit'] = L.tileLayer.provider('HERE.hybridDayTransit', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.hybridDayGrey'] = L.tileLayer.provider('HERE.hybridDayGrey', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.terrainDay'] = L.tileLayer.provider('HERE.terrainDay', {app_id: HEREappId, app_code: HEREappCode});
-//baselayers['HERE.redcuedDay'] = L.tileLayer.provider('HERE.redcuedDay', {app_id: HEREappId, app_code: HEREappCode}); //This layer no longer works?
-//baselayers['HERE.redcuedNight'] = L.tileLayer.provider('HERE.redcuedNight', {app_id: HEREappId, app_code: HEREappCode}); //This layer no longer works?
+//baselayers['HERE.redcuedDay'] = L.tileLayer.provider('HERE.redcuedDay', {app_id: HEREappId, app_code: HEREappCode});
+//baselayers['HERE.redcuedNight'] = L.tileLayer.provider('HERE.redcuedNight', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.mapLabels'] = L.tileLayer.provider('HERE.mapLabels', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.trafficFlow'] = L.tileLayer.provider('HERE.trafficFlow', {app_id: HEREappId, app_code: HEREappCode});
 baselayers['HERE.carnavDayGrey'] = L.tileLayer.provider('HERE.carnavDayGrey', {app_id: HEREappId, app_code: HEREappCode});
@@ -360,7 +369,7 @@ for (var i = 0; i < nmGroups.length; i++) {
  //Add the marker to the map
  var marker = new L.marker([pos[0], pos[1]],{icon:myIcon, nDeviceID:nDeviceID, title:sStatusReplace})
   .on('click', onClickDevice)
-	.bindTooltip(sTooltip, {direction: 'auto'});
+	.bindTooltip(sTooltip, {permanent: 'true', direction: 'auto'});
 	console.log("Adding marker " + sTooltip +" to deviceLayerGroup");
 	deviceLayerGroup.addLayer(marker);
  } //End loop
@@ -373,18 +382,22 @@ for (var i = 0; i < nmGroups.length; i++) {
  var g = nmGroups[i];
  //This section allows you to use your own icon, you will need to comment out the other var sIcon to use this one instead
  if (g.nMonitorStateID == -1) {
-  //Uknown
-	groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroup.svg";
+  //Unknown
+	//var groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroup.svg";
+	groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceUnknown.svg";
 	}
 	else if (g.nMonitorStateID == 3) {
 	 //Up
-	 groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupUp.svg";	
+	 //var groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupUp.svg";	
+	 groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceUp.svg";
 	}
 	else if (g.nMonitorStateID == 2) {
 	 //Maintenance
-	 groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupMaintenance.svg";
+	 //var groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupMaintenance.svg";
+	 groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceMaintenance.svg";
   } 
- else groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupDown.svg"; //Down
+// else groupIcon = "/NmConsole/resources/images/DeviceGroup/I_StaticGroupDown.svg"; //Down
+else groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceDown.svg"; //Down
  var pos = g.sNote.split(",");
  if (pos.length != 2) continue;
  if (isNaN(pos[0]) || isNaN(pos[1])) continue;
@@ -394,18 +407,19 @@ for (var i = 0; i < nmGroups.length; i++) {
  var sGroupName = g.sGroupName
  var nDeviceGroupID = g.nDeviceGroupID
  var sLatLong = pos[0] + "," + pos[1]
- var sTooltip = sGroupName + " | " + sLatLong
+ //var sTooltip = sGroupName + " | " + sLatLong
+ var sTooltip = sGroupName
  //Create the marker		
  var myIcon = L.icon({
   iconUrl: groupIcon,
   iconRetinaUrl: groupIcon,
-  iconSize: [24, 24],
-  iconAnchor: [16, 16],
-  labelAnchor: [6, 0]});
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  labelAnchor: [0, 0]});
  //Add the marker to the map
- var marker = new L.marker([pos[0], pos[1]],{icon:myIcon, nDeviceGroupID:nDeviceGroupID, title:sGroupName})
+ var marker = new L.marker([pos[0], pos[1]],{icon:myIcon, nDeviceGroupID:nDeviceGroupID, title:sLatLong})
   .on('click', onClickGroup)
-  .bindTooltip(sTooltip);
+  .bindTooltip(sTooltip, {permanent: bAlwaysShow, direction: 'bottom'});
 	console.log("Adding marker " + sTooltip +" to groupsLayerGroup");
 	groupsLayerGroup.addLayer(marker);
  }//End loop
