@@ -7,7 +7,9 @@ var oDb = GetDb();
 var groups = [];
 // name of the dynamic group you want to display
 var sDynamicGroupName = Request.QueryString("dynamicGroupName").Item;
+var bUseBuiltin = Request.QueryString("bUseBuiltin").Item;
 
+if (sDynamicGroupName != "All"){
 //Query dataabase for dynamic group filter
 var sSql1 = "select sFilter from devicegroup where sGroupName = '" + sDynamicGroupName + "'";
 var oResult = oDb.ExecSql(sSql1);	
@@ -21,10 +23,20 @@ while (!oDb.IsEOF){
  var sGroupFilter = oDb.GetFieldAsString("sFilter");
  oDb.MoveNext();
 }
+}
 
 //Query database for devices with lat/long information that also match the dynamic group filter
-var sSql = "select D.nDeviceID, D.nDeviceTypeID, D.sDisplayName, sValue, nWorstStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nWorstStateID), nBestStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nBestStateID), " +
-"sStatus from DeviceAttribute DA join Device D on D.nDeviceID = DA.nDeviceID where (sName = 'LatLong' and sValue is not null and D.nDeviceID in (" + sGroupFilter + "))";
+if(bUseBuiltin == true) {
+var sSql = "select D.nDeviceID, D.nDeviceTypeID, D.sDisplayName, (Select sValue as Longitude from DeviceAttribute where DeviceAttribute.sName like '%Longitude%') + ',' + (Select sValue as Latitude from DeviceAttribute where DeviceAttribute.sName like '%Latitude%') as sValue, nWorstStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nWorstStateID), nBestStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nBestStateID), sStatus from DeviceAttribute DA join Device D on D.nDeviceID = DA.nDeviceID where (sName = 'Latitude' and sValue is not null";
+} else {
+	var sSql = "select D.nDeviceID, D.nDeviceTypeID, D.sDisplayName, sValue, nWorstStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nWorstStateID), nBestStateID = (select nInternalMonitorState from MonitorState where nMonitorStateID = nBestStateID), " +
+	"sStatus from DeviceAttribute DA join Device D on D.nDeviceID = DA.nDeviceID where (sName = 'LatLong' and sValue is not null";
+}
+if (sDynamicGroupName != "All"){
+	sSql = sSql + "and D.nDeviceID in (" + sGroupFilter + "))";
+} else {
+	sSql = sSql + ")"
+}
 var oResult = oDb.ExecSql(sSql);
 if (oResult.Failed) {
 	// Failed to load the group data
@@ -47,4 +59,5 @@ if (oResult.Failed) {
 	}
 }
 Response.Write(JSON.ToString(groups))
+
 %>

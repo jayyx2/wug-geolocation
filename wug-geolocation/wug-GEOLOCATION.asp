@@ -1,10 +1,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
-<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.5.1/dist/leaflet.js">
+<link href="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.7.1/dist/leaflet.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/gh/Leaflet/Leaflet@1.7.1/dist/leaflet.js">
 //All credit to Leaflet contributors.
 //You can download leaflet.js and leaflet.css from https://leafletjs.com/download.html</script>
-<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.7.0/leaflet-providers.js">
+<script src="https://cdn.jsdelivr.net/gh/leaflet-extras/leaflet-providers@1.10.2/leaflet-providers.js">
 //All credit to Leaflet-Extras contributors.
 //You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members</script>
 </head>
@@ -45,6 +45,8 @@ Js.initialize();
 ///******************************
 ///VARIABLES THAT CAN BE CHANGED*
 ///******************************
+///Use built-in Latitude and Longitude values?
+var bUseBuiltin = false;
 ///API KEYS
 var HEREappId = ""; //This is your appId, to acquire one sign-up for free here: https://developer.here.com/
 var HEREappCode = ""; //This is your appCode, to acquire one sign-up for free here: https://developer.here.com/ 
@@ -57,11 +59,11 @@ var defaultLat = parseFloat(27.620273282414246); //Default latitude
 var defaultLong = parseFloat(-82.23541259765626); //Default longitude
 var defaultZoom = 8; //Default zoom, higher number is closer
 var defaultMapLayer = "Wikimedia"; //This is the default map tile used
-var sDynamicGroupName = "All devices (dynamic group)";//This is the name of the dynamic group to get the device data from, default is all devices
+var sDynamicGroupName = "All";//This is the name of the dynamic group to get the device data from, default is all devices
 //Make a comma separate list using any of these options, example ["OpenWeatherMap.CloudsClassic", "OpenWeatherMap.PrecipitationClassic", "OpenWeatherMap.RainClassic"]
 //OpenWeatherMap.Clouds, OpenWeatherMap.CloudsClassic, OpenWeatherMap.Precipitation, OpenWeatherMap.PrecipitationClassic
 //OpenWeatherMap.Rain, OpenWeatherMap.RainClassic, OpenWeatherMap.Pressure, OpenWeatherMap.Wind, OpenWeatherMap.Temperature, OpenWeatherMap.Snow
-var aDefaultOverlay = ["OpenWeatherMap.Rain", "WhatsUp Gold - Groups", "WhatsUp Gold - Devices"] //Which overlays will be default?
+var aDefaultOverlay = ["WhatsUp Gold - Groups", "WhatsUp Gold - Devices"] //Which overlays will be default?
 //Tooltip settings
 var bAlwaysShow = true; //Always show the icon tooltip? valid settings are true or false
 var nRefreshInterval = 60 //Seconds to wait between refreshing device group/device markers
@@ -130,9 +132,9 @@ baselayers['OpenRailwayMap'] = L.tileLayer.provider('OpenRailwayMap');
 //baselayers['OpenFireMap'] = L.tileLayer.provider('OpenFireMap'); //This doesn't seem to work?
 //baselayers['SafeCast'] = L.tileLayer.provider('SafeCast'); //Useless map?
 //OpenMapSurfer
-baselayers['OpenMapSurfer.Roads'] = L.tileLayer.provider('OpenMapSurfer.Roads');
-baselayers['OpenMapSurfer.Hybrid'] = L.tileLayer.provider('OpenMapSurfer.Hybrid');
-baselayers['OpenMapSurfer.AdminBounds'] = L.tileLayer.provider('OpenMapSurfer.AdminBounds');
+//baselayers['OpenMapSurfer.Roads'] = L.tileLayer.provider('OpenMapSurfer.Roads');
+//baselayers['OpenMapSurfer.Hybrid'] = L.tileLayer.provider('OpenMapSurfer.Hybrid');
+//baselayers['OpenMapSurfer.AdminBounds'] = L.tileLayer.provider('OpenMapSurfer.AdminBounds');
 //baselayers['OpenMapSurfer.ContourLines'] = L.tileLayer.provider('OpenMapSurfer.ContourLines'); //This doesn't seem to work?
 //baselayers['OpenMapSurfer.Hillshade'] = L.tileLayer.provider('OpenMapSurfer.Hillshade'); //Useless map
 //baselayers['OpenMapSurfer.ElementsAtRisk'] = L.tileLayer.provider('OpenMapSurfer.ElementsAtRisk'); //Useless map
@@ -372,7 +374,7 @@ for (var i = 0; i < nmGroups.length; i++) {
  var marker = new L.marker([pos[0], pos[1]],{icon:myIcon, nDeviceID:nDeviceID, title:sStatusReplace})
   .on('click', onClickDevice)
 	.bindTooltip(sTooltip, {permanent: bAlwaysShow, direction: 'auto'});
-	console.log("Adding marker " + sTooltip +" to deviceLayerGroup");
+	console.log("Adding marker " + sTooltip +" to deviceLayerGroup " + pos[0] + "," + pos[1]);
 	deviceLayerGroup.addLayer(marker);
  } //End loop
 }; //End function
@@ -429,6 +431,8 @@ else groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceDown.
 //When clicked, marker runs this function
 function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' + e.target.options.nDeviceGroupID  + '%2C%22autoLayout%22%3Atrue%7D', '_blank');}
 //layout
+///THE PLACE TO LOOKUP LAT LONG: "leafletquery_devices" or "leafletquery_builtin"; }
+
 (function ($) {
  Nm.loadScript = function() {}; //This stops unnecessary WhatsUp Gold scripts from loading
  var layoutList,	scrollToSelected;
@@ -442,7 +446,7 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
   var contentHeight = $(window).height() - (titlebar.outerHeight(true) + navHeight);
   mapArea.css("height", contentHeight + "px");
   if (isInitialized == false){initialize();}
-  $.get("leafletquery_devices.asp", {dynamicGroupName: sDynamicGroupName}, function (data){
+  $.get("leafletquery_builtin.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
   var aMarkers = JSON.parse(data);
   addDeviceMarkers(aMarkers);
   deviceLayerGroup.addTo(map)
@@ -459,7 +463,7 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
  // Reload markers every X seconds
  setInterval(function() {
   refreshMarkers();
-  $.get("leafletquery_devices.asp", {dynamicGroupName: sDynamicGroupName}, function (data){
+  $.get("leafletquery_builtin.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
   var aDeviceMarkers = JSON.parse(data);
   addDeviceMarkers(aDeviceMarkers);
   });
