@@ -3,6 +3,9 @@ These 3 .ASP files allow you to place devices or groups on a map using geolocati
 Example Device Attribute:
 LatLong 28.719536,-81.507397
 
+****THIS IS NOW CAPABLE OF USING THE BUILT-IN LATITUDE AND LONGITUDE VALUES***
+
+
 Some of the map providers require API keys and/or agreeing to their terms of service. You must abide by all of the map providers terms of service, I will not be held responsible if you don't! Note there are many variables which can be changed in wug-geolocation.asp. They are commented to clarify what each option does.
 
 
