@@ -431,8 +431,6 @@ else groupIcon = "/NmConsole/resources/Wug/images/MapLegend/I_Legend_DeviceDown.
 //When clicked, marker runs this function
 function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' + e.target.options.nDeviceGroupID  + '%2C%22autoLayout%22%3Atrue%7D', '_blank');}
 //layout
-///THE PLACE TO LOOKUP LAT LONG: "leafletquery_devices" or "leafletquery_builtin"; }
-
 (function ($) {
  Nm.loadScript = function() {}; //This stops unnecessary WhatsUp Gold scripts from loading
  var layoutList,	scrollToSelected;
@@ -446,7 +444,7 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
   var contentHeight = $(window).height() - (titlebar.outerHeight(true) + navHeight);
   mapArea.css("height", contentHeight + "px");
   if (isInitialized == false){initialize();}
-  $.get("leafletquery_builtin.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
+  $.get("leafletquery_devices.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
   var aMarkers = JSON.parse(data);
   addDeviceMarkers(aMarkers);
   deviceLayerGroup.addTo(map)
@@ -463,7 +461,7 @@ function onClickGroup(e) {window.open('/NmConsole/#home/p=%7B%22groupId%22%3A' +
  // Reload markers every X seconds
  setInterval(function() {
   refreshMarkers();
-  $.get("leafletquery_builtin.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
+  $.get("leafletquery_devices.asp", {dynamicGroupName: sDynamicGroupName, bUseBuiltin : bUseBuiltin}, function (data){
   var aDeviceMarkers = JSON.parse(data);
   addDeviceMarkers(aDeviceMarkers);
   });
