@@ -18,18 +18,10 @@ Some of the map providers require API keys and/or agreeing to their terms of ser
 //You can be download the file from here: https://github.com/leaflet-extras/leaflet-providers credit to leaflet-extras members
 
 jQuery JavaScript Library v3.6.0
-
 https://jquery.com/
-
 Includes Sizzle.js
-
 https://sizzlejs.com/
-
 Copyright OpenJS Foundation and other contributors
-
 Released under the MIT license
-
 https://jquery.org/license
-
 Date: 2021-03-02T17:08Z
-
